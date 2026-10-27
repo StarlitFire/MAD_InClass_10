@@ -29,6 +29,12 @@ class _SignupPageState extends State<SignupPage> {
   // 🔑 The Global Key - acts like a remote control for the form
   final _formKey = GlobalKey<FormState>();
 
+  final List<String> tipList = [
+    'Your password should contain both letters and numbers',
+    'Your password should be at least 8 characters long',
+    'Your password should not be easy to guess',
+  ];
+
   // 📝 Controllers to track what the user types
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -136,10 +142,45 @@ class _SignupPageState extends State<SignupPage> {
               ),
               const SizedBox(height: 24),
 
+              //Tip Button
+              ElevatedButton(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        !RegExp(r'[a-zA-Z]')
+                                    .hasMatch(_passwordController.text) ||
+                                !RegExp(r'\d')
+                                    .hasMatch(_passwordController.text)
+                            ? tipList[0]
+                            : _passwordController.text.length < 8
+                            ? tipList[1]
+                            : tipList[2],
+                      ),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.purple,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 40,
+                    vertical: 12,
+                  ),
+                ),
+                child: const Text(
+                  'Password Tips',
+                  style: TextStyle(fontSize: 18, color: Colors.black),
+                ),
+              ),
+              const SizedBox(height: 24),
+
               // 🚀 Sign Up Button
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
+                    ScaffoldMessenger.of(context).clearSnackBars();
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text(
@@ -157,7 +198,10 @@ class _SignupPageState extends State<SignupPage> {
                     vertical: 12,
                   ),
                 ),
-                child: const Text('Sign Up', style: TextStyle(fontSize: 18)),
+                child: const Text(
+                  'Sign Up',
+                  style: TextStyle(fontSize: 18, color: Colors.black),
+                ),
               ),
             ],
           ),
